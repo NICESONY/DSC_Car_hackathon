@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" data-navigation-type="default" data-navbar-horizontal-shape="default" lang="en-US" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Sign In</title>
+
+    <!-- ===============================================-->
+    <!--    Favicons-->
+    <!-- ===============================================-->
+   <!--  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"> -->
+    <!-- <link rel="manifest" href="/assets/img/favicons/manifest.json"> -->
+<!--     <meta name="msapplication-TileImage" content="/assets/img/favicons/mstile-150x150.png"> -->
+    <meta name="theme-color" content="#ffffff">
+    <script src="/vendors/simplebar/simplebar.min.js"></script>
+    <script src="/assets/js/config.js"></script>
+
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="/vendors/simplebar/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link href="/assets/css/theme-rtl.min.css" type="text/css" rel="stylesheet" id="style-rtl">
+    <link href="/assets/css/theme.min.css" type="text/css" rel="stylesheet" id="style-default">
+    <link href="/assets/css/user-rtl.min.css" type="text/css" rel="stylesheet" id="user-style-rtl">
+    <link href="/assets/css/user.min.css" type="text/css" rel="stylesheet" id="user-style-default">
+    <script>
+        var phoenixIsRTL = window.config.config.phoenixIsRTL;
+        if (phoenixIsRTL) {
+            var linkDefault = document.getElementById('style-default');
+            var userLinkDefault = document.getElementById('user-style-default');
+            linkDefault.setAttribute('disabled', true);
+            userLinkDefault.setAttribute('disabled', true);
+            document.querySelector('html').setAttribute('dir', 'rtl');
+        } else {
+            var linkRTL = document.getElementById('style-rtl');
+            var userLinkRTL = document.getElementById('user-style-rtl');
+            linkRTL.setAttribute('disabled', true);
+            userLinkRTL.setAttribute('disabled', true);
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Main Content -->
+    <main class="main" id="top">
+        <div class="row vh-100 g-0">
+            <div class="col-lg-6 position-relative d-none d-lg-block">
+                <div class="bg-holder">
+                    <img src="/images/logo1.png" height="800px">
+                </div>
+                <!--/.bg-holder-->
+            </div>
+        <div class="col-lg-6">
+            <div class="row flex-center h-100 g-0 px-4 px-sm-0">
+                <div class="col col-sm-6 col-lg-7 col-xl-6">
+                    <a class="d-flex flex-center text-decoration-none mb-4" href="/">
+                        <div class="d-flex align-items-center fw-bolder fs-3 d-inline-block">
+                            <img src="/images/logo222.png" width="58" />
+                        </div>
+                    </a>
+                    <div class="text-center mb-7">
+                        <h3 class="text-body-highlight">sign in</h3>
+                        <p class="text-body-tertiary">Get access to your account</p>
+                    </div>
+                   
+                    
+                  
+                    <form th:action="@{/signup/signin}" method="post">
+                        <div th:if="${param.error}">
+                            <div class="alert alert-danger">
+                                사용자ID 또는 비밀번호를 확인해 주세요.
+                            </div>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label class="form-label" for="username">Username</label>
+                            <div class="form-icon-container">
+                                <input class="form-control form-icon-input" name="username" id="username" type="text" placeholder="사용자" />
+                                <span class="fas fa-user text-body fs-9 form-icon"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="form-icon-container">
+                                <input class="form-control form-icon-input" name="password" id="password" type="password" placeholder="비밀번호" />
+                                <span class="fas fa-key text-body fs-9 form-icon"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">로그인</button>
+                    </form>
+                    <div class="text-center">
+                        <a class="fs-9 fw-bold" href="/signup">Create an account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+    <!-- End of Main Content -->
+
+    <!-- JavaScripts -->
+    <script src="/vendors/popper/popper.min.js"></script>
+    <script src="/vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="/vendors/anchorjs/anchor.min.js"></script>
+    <script src="/vendors/is/is.min.js"></script>
+    <script src="/vendors/fontawesome/all.min.js"></script>
+    <script src="/vendors/lodash/lodash.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="/vendors/list.js/list.min.js"></script>
+    <script src="/vendors/feather-icons/feather.min.js"></script>
+    <script src="/vendors/dayjs/dayjs.min.js"></script>
+    <script src="/assets/js/phoenix.js"></script>
+</body>
+
+</html>

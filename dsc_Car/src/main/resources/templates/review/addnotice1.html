@@ -1,0 +1,53 @@
+<html layout:decorate="~{layout}">
+
+
+
+<th:block layout:fragment="content" class="container">
+
+
+
+    
+  
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mt-3 mt-lg-0">
+            </ul>
+          </div>
+        </nav>
+        
+
+<div class="container-medium">
+
+    <h5 class="my-3 border-bottom pb-2">개인 증상 기록 작성</h5>
+    <form th:action="@{/review/create}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="subject" class="form-label">의식 수준(YES/NO))</label>
+            <input type="text" name="title" id="subject" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="author" class="form-label">상처부위</label>
+            <input type="text" name="author" id="author" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">증상 사진</label>
+            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+        </div>
+        
+        <div class="mb-3">
+        <input type="file" name = "file1">
+        </div>
+                
+       <div class="mb-3">
+        <input type="file" name = "file2">
+        </div>       
+        
+      <div class="mb-3">
+        <input type="file" name = "file3">
+        </div>               
+        <input type="submit" value="저장하기" class="btn btn-primary my-2">
+    </form>
+    </div>
+</div>
+</th:block>
+
+
+

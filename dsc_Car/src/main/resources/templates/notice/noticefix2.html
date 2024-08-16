@@ -1,0 +1,68 @@
+<html layout:decorate="~{layout}">
+
+
+
+<th:block layout:fragment="content" class="container">
+
+
+
+  
+  
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mt-3 mt-lg-0">
+            </ul>
+          </div>
+        </nav>
+        
+<div  class="container-medium">
+    <h5 class="my-3 border-bottom pb-2">구급차 증상 기록 수정</h5>
+
+    <form th:action="@{/notice/update2}" method="post"  enctype="multipart/form-data">
+
+    	<input type="hidden" name="id" th:value="${notice.id}">
+	
+    	<input type="hidden" name = "image1"  th:value ="${notice.image1}">
+     	<input type="hidden" name = "image2"  th:value ="${notice.image2}">   
+     	<input type="hidden" name = "image3"  th:value ="${notice.image3}">	
+   	
+    	<input type="hidden" name="date" th:value="${notice.date}">
+        <div class="mb-3">
+            <label for="subject" class="form-label">산소 포화도 / 심전도 / 심박수</label>
+            <input type="text" name="title" id="subject" class="form-control" th:value="${notice.title}">
+        </div>
+        
+        
+        <div class="mb-3">
+            <label for="author" class="form-label">체온 / 혈당</label>
+            <input type="text" name="author" id="author" class="form-control" th:value="${notice.author}">
+        </div>
+        
+        
+        
+        
+        <div class="mb-3">
+            <label for="content" class="form-label">증상 사진</label>
+            <textarea name="content" id="content" class="form-control" rows="10" th:text="${notice.content}"></textarea>
+        </div>   
+        
+        <div class="mb-3">
+        <input type="file" name = "file1">
+        [[${notice.image1}]]
+        </div>
+       
+       <div class="mb-3">
+        <input type="file" name = "file2">
+        [[${notice.image2}]]
+        </div>
+        
+
+       <div class="mb-3">
+        <input type="file" name = "file3">
+        [[${notice.image3}]]
+        </div>
+    
+        
+        <input type="submit" value="수정하기" class="btn btn-primary my-2">
+    </form>
+</div>
+</th:block>

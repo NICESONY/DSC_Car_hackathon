@@ -1,0 +1,568 @@
+<html layout:decorate="~{layout}">
+<th:block layout:fragment="content" class="container">
+<style>
+    #container {overflow:hidden;height:300px;position:relative;}
+    #mapWrapper {width:100%;height:300px;z-index:1;}
+    #rvWrapper {width:50%;height:300px;top:0;right:0;position:absolute;z-index:0;}
+    #container.view_roadview #mapWrapper {width: 50%;}
+    #roadviewControl {position:absolute;top:5px;left:5px;width:42px;height:42px;z-index: 1;cursor: pointer; background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png) 0 -450px no-repeat;}
+    #roadviewControl.active {background-position:0 -350px;}
+    #close {position: absolute;padding: 4px;top: 5px;left: 5px;cursor: pointer;background: #fff;border-radius: 4px;border: 1px solid #c8c8c8;box-shadow: 0px 1px #888;}
+    #close .img {display: block;background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/rv_close.png) no-repeat;width: 14px;height: 14px;}
+    
+     #modalcontainer { overflow:hidden; position:relative; }
+    #modalmapWrapper { width:100%; height:500px; z-index:1; }
+    #modalrvWrapper { width:100%; height:500px; position:relative; z-index:0; margin-top: 20px; display:none; }
+    #modalroadviewControl { position:absolute; top:5px; left:5px; width:42px; height:42px; z-index:1; cursor:pointer; background:url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png) 0 -450px no-repeat; }
+    #modalroadviewControl.active { background-position:0 -350px; }
+    #modalclose { position:absolute; padding:4px; top:5px; left:5px; cursor:pointer; background:#fff; border-radius:4px; border:1px solid #c8c8c8; box-shadow:0px 1px #888; }
+    #modalclose .img { display:block; background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/rv_close.png) no-repeat; width:14px; height:14px; }
+  </style>
+</nav>
+
+</main>
+        
+  <div class="container-medium my-3">
+  
+    <div class="row">
+      <div class="col-12">
+        <div class="card overflow-hidden">
+          
+          <div class="card-body p-0">
+            
+
+            <div class="row g-0">
+              <div class="col-12 col-xl-5 border-end">
+                <!-- 페이지의 왼쪽 부분 -->
+                <div class="px-5 px-lg-6 py-4">
+                  <img class="img-fluid d-block mx-auto"th:if="${not #lists.isEmpty(pictures)}" th:src="|${downpath}/${pictures[0].image1}|" alt="" style="max-height: 280px;min-height: 150px;" />
+            <img class="img-fluid d-block mx-auto" th:unless="${not #lists.isEmpty(pictures)}" src="/images/naver.png" alt="" style="max-height: 280px;min-height: 150px;" />
+            
+            <div class="row gx-0 gy-3 border-bottom px-5 px-lg-6 py-4 p-xl-0">
+              <div class="col-12 col-xl-7">
+                <div class="px-xl-6 py-xl-4">
+                  <div class="row g-2 align-items-center">
+                    <div class="col-auto col-12 col-lg-auto d-flex flex-1">
+                      <!-- 사진 추가 버튼 -->
+                      <a class="d-sm-block btn btn-subtle-secondary dropdown-toggle dropdown-caret-none d-flex align-items-center me-2" th:href="@{|/picture/add/${restaurant.id}|}">
+                        사진 추가 <span class="fa-solid fa-plus ms-2"></span>
+                      </a>
+                      <button type="button" class="btn btn-subtle-secondary dropdown-toggle dropdown-caret-none d-flex align-items-center me-2" data-bs-toggle="modal" data-bs-target="#modal2">
+                        사진 모두 보기
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+                  <h3 class="fw-bolder lh-sm mb-5" th:if="${not #strings.isEmpty(restaurant.locationname)}" th:text="${restaurant.locationname}"></h3>
+                  <h3 class="fw-bolder lh-sm mb-5" th:unless="${not #strings.isEmpty(restaurant.locationname)}">음식점 이름을 알 수 없습니다.</h3>
+                  
+                  
+                  <div class="mb-5">
+                    <h6 class="text-body-secondary mb-2">태그</h6>
+                    <div class="d-flex align-items-center">                      
+                      <!-- <span class="badge badge-phoenix badge-phoenix-warning fs-10 me-2">주먹밥</span>
+                      <span class="badge badge-phoenix badge-phoenix-success fs-10 me-2">맛집</span> -->
+                      <label th:if="${not #lists.isEmpty(restaurant.category)}" th:each="category : ${restaurant.category}">
+                          <span class="badge badge-phoenix badge-phoenix-info fs-10 me-2"th:if="${not #strings.isEmpty(restaurant.category)}" th:text="${category}"></span>
+                      </label>
+                           <span class="badge badge-phoenix badge-phoenix-info fs-10 me-2"th:unless="${not #strings.isEmpty(restaurant.category)}">추가된 태그가 없습니다.</span>
+                      <a class="text-body fw-bolder fs-9 lh-1 text-decoration-none" href="#!"> <span class="fa-solid fa-plus me-1"></span>태그 추가</a>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                      <h4 class="me-3">상세 정보</h4>
+                      <button class="btn btn-link p-0"><span class="fa-solid fa-pen"></span></button>
+                    </div>
+                    <p class="text-body-secondary">
+                                <img src="/images/restaurant/map-pin.svg" alt="Tag SVG" height="20" style="margin-right: 5px;">
+                                <label class="text-body-highlight mb-0 me-2 lh-1"   th:if="${not #strings.isEmpty(restaurant.location)}"th:text="${restaurant.location}"></label>
+                                <label class="text-body-highlight mb-0 me-2 lh-1"  th:unless="${not #strings.isEmpty(restaurant.location)}">장소 정보가 없습니다.</label><br>
+                            
+                            <p class="text-body-secondary">
+                                <img src="/images/restaurant/globe.svg" alt="Tag SVG" height="20" style="margin-right: 5px;">www.bongousse.net<br>
+                            </p>
+                            <p class="text-body-secondary">
+                                <img src="/images/restaurant/phone.svg" alt="Tag SVG" height="20" style="margin-right: 5px;">
+                                <label class="text-body-highlight mb-0 me-2 lh-1"   th:if="${not #strings.isEmpty(restaurant.cphone)}"th:text="${restaurant.cphone}"></label>
+                                <label class="text-body-highlight mb-0 me-2 lh-1"  th:unless="${not #strings.isEmpty(restaurant.cphone)}">전화번호 정보가 없습니다.</label><br>
+                            </p>
+                            <p class="text-body-secondary" style="margin-bottom:10px;">
+                                <img src="/images/restaurant/clock.svg" alt="Tag SVG" height="20" style="margin-right: 5px;">영업시간<br><p>
+                                <label>
+                                
+                                </label>
+                                <label class="text-body-highlight mb-0 me-2 lh-1"  th:if="${not #strings.isEmpty(restaurant.worktime)}" th:text="${restaurant.worktime}"></label>
+                                <label class="text-body-highlight mb-0 me-2 lh-1" th:unless="${not #strings.isEmpty(restaurant.worktime)}" >영업시간 정보가 없습니다.</label>
+                          <hr>  
+                    <p class="text-body-highlight">The female circus horse-rider is a recurring subject in Chagall’s work. In 1926 the art dealer Ambroise Vollard invited Chagall to make a project based on the circus. They visited Paris’s historic Cirque d’Hiver Bouglione together; Vollard lent Chagall his private box seats. Chagall completed 19 gouaches...<a class="fw-semibold" href="#!">see more </a></p>
+                  </div>
+                </div>
+              </div>
+              <!-- 페이지의 왼쪽 부분 끝 -->
+              <div class="col-12 col-xl-7">
+                <div class="px-5 px-lg-6 py-4">
+                  <div class="mb-7">
+                    <h4 class="mb-4">메뉴 <span class="text-body-tertiary fw-normal fs-6">(23)</span></h4>
+                    <div class="row align-items-center g-0 justify-content-between mb-3">
+                      <div class="col-12 col-sm-auto">
+                      </div>
+                      <div class="col-auto d-flex">
+                        <p class="mb-0 ms-sm-3 fs-9 text-body-tertiary fw-bold"><span class="fas fa-filter me-1 fw-extra-bold fs-10"></span>23개의 메뉴</p>
+                        <button class="btn btn-link p-0 ms-3 fs-9 text-primary fw-bold"><span class="fas fa-sort me-1 fw-extra-bold fs-10"></span>정렬</button>
+                      </div>
+                    </div>
+                    <!-- 메뉴 시작 -->
+                    <div class="row justify-content-between align-items-md-center hover-actions-trigger btn-reveal-trigger border-translucent py-3 gx-0 border-top"th:if="${not #lists.isEmpty(restaurant.productmenu)}" th:each="productmenu, stat : ${restaurant.productmenu}">
+                      <div class="col-12 col-lg-auto flex-1">
+                        <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="todoOffcanvas-1">
+                          <div class="form-check mb-1 mb-md-0 d-flex align-items-center lh-1">
+                            <label class="mb-0 fs-8 me-3 line-clamp-1" th:text="${productmenu}"></label>
+                            <p class="text-body-highlight mb-0 me-2 lh-1"th:text="${restaurant.price[stat.index]} + '원'"></p>
+                            <span class="badge badge-phoenix fs-10 badge-phoenix-primary"></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-lg-auto">
+                        <div class="d-flex ms-4 lh-1 align-items-center">
+                          <div class="d-none d-lg-block end-0 position-absolute" style="top: 23%;">
+                            <div class="hover-actions end-0">
+                              <button class="btn btn-phoenix-secondary btn-icon me-1 fs-10 text-body px-0 me-1"><span class="fas fa-edit"></span></button>
+                              <button class="btn btn-phoenix-secondary btn-icon fs-10 text-danger px-0"><span class="fas fa-trash"></span></button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 메뉴 끝 -->
+                    
+                    <!-- 메뉴가 없을때 -->
+                    <div class="row justify-content-between align-items-md-center hover-actions-trigger btn-reveal-trigger border-translucent py-3 gx-0 border-top"th:unless="${not #lists.isEmpty(restaurant.productmenu)}" >
+                      <div class="col-12 col-lg-auto flex-1">
+                        <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="todoOffcanvas-1">
+                          <div class="form-check mb-1 mb-md-0 d-flex align-items-center lh-1">
+                            <label class="mb-0 fs-8 me-3 line-clamp-1" >메뉴 정보가 없습니다.</label>
+                            <p class="text-body-highlight mb-0 me-2 lh-1">가격 정보가 없습니다.</p>
+                            <span class="badge badge-phoenix fs-10 badge-phoenix-primary">신메뉴</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- 메뉴 끝 -->
+                    
+                    
+                    
+                    <a class="fw-bold fs-9 mt-4" href="#!"><span class="fas fa-plus me-1"></span>메뉴 추가</a>
+                  
+                  <!-- 지도 시작 -->
+<!--   <div id="map" style="width:100%;height:350px;"></div>
+	<div class="map_wrap" style="overflow:hidden;">
+    <div id="mapWrapper" style="width:50%;height:300px;float:left">
+        <div id="map1" style="width:100%;height:100%"></div> <!-- 지도를 표시할 div 입니다 -->
+   <!--   </div>
+    <div id="rvWrapper" style="width:50%;height:300px;float:left">
+        <div id="roadview" style="width:100%;height:100%"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+   <!--  </div>
+</div> -->
+<div id="container">
+    <div id="rvWrapper">
+        <div id="roadview" style="width:100%;height:100%;"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+        <div id="close" title="로드뷰닫기" onclick="closeRoadview()"><span class="img"></span></div>
+    </div>
+    <div id="mapWrapper">
+        <div id="map" style="width:100%;height:100%"></div> <!-- 지도를 표시할 div 입니다 -->
+        <div id="roadviewControl" onclick="setRoadviewRoad()"></div>
+    </div>
+</div>
+                  <!-- 지도 끝 -->
+                  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8118060c10a6518e5f79855cb17590cd&libraries=services"></script>
+<script>
+var overlayOn = false,
+container = document.getElementById('container'),
+mapWrapper = document.getElementById('mapWrapper'), //지도를 감싸고 있는 DIV태그
+mapContainer = document.getElementById('map'),
+rvContainer = document.getElementById('roadview'); //로드뷰를 표시할 div
+
+var mapOption = {
+    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+    level: 3 // 지도의 확대 레벨
+};
+
+var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다    
+var rv = new kakao.maps.Roadview(rvContainer); //로드뷰 객체
+var rvClient = new kakao.maps.RoadviewClient(); //좌표로부터 로드뷰 파노ID를 가져올 로드뷰 helper객체
+
+//주소-좌표 변환 객체를 생성합니다
+var geocoder = new kakao.maps.services.Geocoder();
+
+//주소로 좌표를 검색합니다
+geocoder.addressSearch('[[${restaurant.location}]]', function(result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        var marker = new kakao.maps.Marker({
+            map: map,
+            position: coords
+        });
+
+        // 인포윈도우로 장소에 대한 설명을 표시합니다
+        var infowindow = new kakao.maps.InfoWindow({
+            content: '<div style="width:150px;text-align:center;padding:6px 0;">[[${restaurant.locationname}]]</div>'
+        });
+        infowindow.open(map, marker)
+        map.setCenter(coords);
+    } 
+});
+
+kakao.maps.event.addListener(rv, 'position_changed', function() {
+    var rvPosition = rv.getPosition();
+    map.setCenter(rvPosition);
+    if(overlayOn) {
+        marker.setPosition(rvPosition);
+    }
+});
+
+//마커 이미지를 생성합니다.
+var markImage = new kakao.maps.MarkerImage(
+    'https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png',
+    new kakao.maps.Size(26, 46),
+    {
+        spriteSize: new kakao.maps.Size(1666, 168),
+        spriteOrigin: new kakao.maps.Point(705, 114),
+        offset: new kakao.maps.Point(13, 46)
+    }
+);
+
+var marker = new kakao.maps.Marker({
+    image : markImage,
+    position: map.getCenter(),
+    draggable: true
+});
+
+// Ensure rvMarker is correctly referenced
+var rvMarker = marker;
+
+//마커에 dragend 이벤트를 할당합니다
+kakao.maps.event.addListener(rvMarker, 'dragend', function(mouseEvent) {
+    var position = rvMarker.getPosition(); //현재 마커가 놓인 자리의 좌표
+    console.log("Marker dragged to position:", position);
+    toggleRoadview(position); //로드뷰를 토글합니다
+});
+
+//지도에 클릭 이벤트를 등록합니다
+kakao.maps.event.addListener(map, 'click', function(mouseEvent){
+    if(!overlayOn) {
+        return;
+    }
+    var position = mouseEvent.latLng;
+    console.log("Map clicked at position:", position);
+    marker.setPosition(position);
+    toggleRoadview(position);
+});
+
+//전달받은 좌표(position)에 가까운 로드뷰의 파노라마 ID를 추출하여 로드뷰를 설정하는 함수입니다
+function toggleRoadview(position){
+    rvClient.getNearestPanoId(position, 50, function(panoId) {
+        if (panoId === null) {
+            toggleMapWrapper(true, position);
+        } else {
+            toggleMapWrapper(false, position);
+            rv.setPanoId(panoId, position);
+        }
+    });
+}
+
+//지도를 감싸고 있는 div의 크기를 조정하는 함수입니다
+function toggleMapWrapper(active, position) {
+    if (active) {
+        container.className = '';
+        map.relayout();
+        map.setCenter(position);
+    } else {
+        if (container.className.indexOf('view_roadview') === -1) {
+            container.className = 'view_roadview';
+            map.relayout();
+            map.setCenter(position);
+        }
+    }
+}
+
+//지도 위의 로드뷰 도로 오버레이를 추가,제거하는 함수입니다
+function toggleOverlay(active) {
+    if (active) {
+        overlayOn = true;
+        map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+        marker.setMap(map);
+        marker.setPosition(map.getCenter());
+        toggleRoadview(map.getCenter());
+    } else {
+        overlayOn = false;
+        map.removeOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+        marker.setMap(null);
+    }
+}
+
+//지도 위의 로드뷰 버튼을 눌렀을 때 호출되는 함수입니다
+function setRoadviewRoad() {
+    var control = document.getElementById('roadviewControl');
+    if (control.className.indexOf('active') === -1) {
+        control.className = 'active';
+        toggleOverlay(true);
+    } else {
+        control.className = '';
+        toggleOverlay(false);
+    }
+}
+
+//로드뷰에서 X버튼을 눌렀을 때 로드뷰를 지도 뒤로 숨기는 함수입니다
+function closeRoadview() {
+    var position = marker.getPosition();
+    toggleMapWrapper(true, position);
+}
+</script>
+<button type="button" class="btn btn-subtle-secondary dropdown-toggle dropdown-caret-none d-flex align-items-center me-2" data-bs-toggle="modal" data-bs-target="#modal3">
+                        지도 크게 보기
+                      </button>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- 사진 모두 보기 모달 창-->
+  <!-- Vertically centered scrollable modal -->
+  <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 90%;max-height: 90%;"role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal2Label">[[${restaurant.locationname}]]의 사진</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <!-- Repeat the image blocks for more images -->
+              
+                <div class="col-12 col-sm-6 col-md-4" style="margin-bottom:5px;" th:if="${not #lists.isEmpty(pictures)}" th:each="picture : ${pictures}">
+                  <div class="hover-actions-trigger mx-auto rounded-3 overflow-hidden"style="border: 2px solid #b8b8b8;">
+                    <img class="img-fluid" th:src="|${downpath}/${picture.image1}|" />
+                  </div>
+                </div>
+              
+              <div class="col-12 col-sm-6 col-md-4" style="margin-bottom:5px" th:unless="${not #lists.isEmpty(pictures)}">
+                  <div class="hover-actions-trigger mx-auto rounded-3 overflow-hidden"style="border: 2px solid #b8b8b8;">
+                    <img class="img-fluid" src="" />
+                  </div>
+                </div>
+              <!-- Add more images as needed -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 지도 크게 보기 모달 창-->
+  <!-- Vertically centered scrollable modal -->
+  <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 100%;max-height: 90%;"role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal2Label">지도 크게 보기</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+         <div class="modal-body">
+           <div id="modalcontainer">
+                        <div id="modalmapWrapper">
+                            <div id="modalmap" style="width:100%; height:100%;"></div> <!-- 지도를 표시할 div 입니다 -->
+                            <div id="modalroadviewControl" onclick="setModalRoadview()"></div>
+                        </div>
+                        <div id="modalrvWrapper">
+                            <div id="modalroadview" style="width:100%; height:100%;"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+                     <!--        <div id="modalclose" title="로드뷰닫기" onclick="modalcloseRoadview()"><span class="img"></span></div> -->
+                        </div>
+                       
+                    </div>
+                </div>
+                 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8118060c10a6518e5f79855cb17590cd&libraries=services"></script>
+                <script>
+                document.getElementById('modal3').addEventListener('shown.bs.modal', function () {
+                    var modalOverlayOn = false,
+                        modalContainer = document.getElementById('modalcontainer'),
+                        modalMapWrapper = document.getElementById('modalmapWrapper'), //지도를 감싸고 있는 DIV태그
+                        modalMapContainer = document.getElementById('modalmap'),
+                        modalRvContainer = document.getElementById('modalroadview'); //로드뷰를 표시할 div
+
+                    var modalMapOption = {
+                        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+                        level: 3 // 지도의 확대 레벨
+                    };
+
+                    var modalMap = new kakao.maps.Map(modalMapContainer, modalMapOption); // 지도를 생성합니다    
+                    var modalRv = new kakao.maps.Roadview(modalRvContainer); //로드뷰 객체
+                    var modalRvClient = new kakao.maps.RoadviewClient(); //좌표로부터 로드뷰 파노ID를 가져올 로드뷰 helper객체
+
+                    //주소-좌표 변환 객체를 생성합니다
+                    var modalGeocoder = new kakao.maps.services.Geocoder();
+
+                    //주소로 좌표를 검색합니다
+                    modalGeocoder.addressSearch('[[${restaurant.location}]]', function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                            var marker = new kakao.maps.Marker({
+                                map: modalMap,
+                                position: coords
+                            });
+
+                            // 인포윈도우로 장소에 대한 설명을 표시합니다
+                            var infowindow = new kakao.maps.InfoWindow({
+                                content: '<div style="width:150px;text-align:center;padding:6px 0;">[[${restaurant.locationname}]]</div>'
+                            });
+                            infowindow.open(modalMap, marker)
+                            modalMap.setCenter(coords);
+                        } 
+                    });
+
+                    kakao.maps.event.addListener(modalRv, 'position_changed', function() {
+                        var modalRvPosition = modalRv.getPosition();
+                        modalMap.setCenter(modalRvPosition);
+                        if(modalOverlayOn) {
+                            modalMarker.setPosition(modalRvPosition);
+                        }
+                    });
+
+                    //마커 이미지를 생성합니다.
+                    var modalMarkImage = new kakao.maps.MarkerImage(
+                        'https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png',
+                        new kakao.maps.Size(26, 46),
+                        {
+                            spriteSize: new kakao.maps.Size(1666, 168),
+                            spriteOrigin: new kakao.maps.Point(705, 114),
+                            offset: new kakao.maps.Point(13, 46)
+                        }
+                    );
+
+                    var modalMarker = new kakao.maps.Marker({
+                        image: modalMarkImage,
+                        position: modalMap.getCenter(),
+                        draggable: true
+                    });
+
+                    // Ensure rvMarker is correctly referenced
+                    var modalRvMarker = modalMarker;
+
+                    //마커에 dragend 이벤트를 할당합니다
+                    kakao.maps.event.addListener(modalRvMarker, 'dragend', function(mouseEvent) {
+                        var position = modalRvMarker.getPosition(); //현재 마커가 놓인 자리의 좌표
+                        console.log("Marker dragged to position:", position);
+                        toggleModalRoadview(position); //로드뷰를 토글합니다
+                    });
+
+                    //지도에 클릭 이벤트를 등록합니다
+                    kakao.maps.event.addListener(modalMap, 'click', function(mouseEvent){
+                        if(!modalOverlayOn) {
+                            return;
+                        }
+                        var position = mouseEvent.latLng;
+                        console.log("Map clicked at position:", position);
+                        modalMarker.setPosition(position);
+                        toggleModalRoadview(position);
+                    });
+
+                    //전달받은 좌표(position)에 가까운 로드뷰의 파노라마 ID를 추출하여 로드뷰를 설정하는 함수입니다
+                    function toggleModalRoadview(position){
+                        modalRvClient.getNearestPanoId(position, 50, function(panoId) {
+                            if (panoId === null) {
+                                toggleModalMapWrapper(true, position);
+                            } else {
+                                toggleModalMapWrapper(false, position);
+                                modalRv.setPanoId(panoId, position);
+                            }
+                        });
+                    }
+
+                    //지도를 감싸고 있는 div의 크기를 조정하는 함수입니다
+                    function toggleModalMapWrapper(active, position) {
+                        if (active) {
+                            modalContainer.className = '';
+                            modalMap.relayout();
+                            modalMap.setCenter(position);
+                        } else {
+                            if (modalContainer.className.indexOf('view_roadview') === -1) {
+                                modalContainer.className = 'view_roadview';
+                                modalMap.relayout();
+                                modalMap.setCenter(position);
+                            }
+                        }
+                    }
+
+                    //지도 위의 로드뷰 도로 오버레이를 추가,제거하는 함수입니다
+                    function toggleModalOverlay(active) {
+                        if (active) {
+                            modalOverlayOn = true;
+                            modalMap.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+                            modalMarker.setMap(modalMap);
+                            modalMarker.setPosition(modalMap.getCenter());
+                            toggleModalRoadview(modalMap.getCenter());
+                            document.getElementById('modalrvWrapper').style.display = 'block';
+                        } else {
+                            modalOverlayOn = false;
+                            modalMap.removeOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+                            modalMarker.setMap(null);
+                            document.getElementById('modalrvWrapper').style.display = 'none';
+                        }
+                    }
+
+                    //지도 위의 로드뷰 버튼을 눌렀을 때 호출되는 함수입니다
+                    function setModalRoadview() {
+                        var control = document.getElementById('modalroadviewControl');
+                        if (control.className.indexOf('active') === -1) {
+                            control.className = 'active';
+                            toggleModalOverlay(true);
+                        } else {
+                            control.className = '';
+                            toggleModalOverlay(false);
+                        }
+                    }
+
+                    //로드뷰에서 X버튼을 눌렀을 때 로드뷰를 지도 뒤로 숨기는 함수입니다
+/*                    function modalCloseRoadview() {
+                        var position = modalMarker.getPosition();
+                        toggleModalMapWrapper(true, position);
+                        document.getElementById('modalrvWrapper').style.display = 'none';
+                        document.getElementById('modalroadviewControl').classList.remove('active');
+                        }
+*/
+                    // Assign the setModalRoadview function to the window to make it accessible from the HTML
+                    window.setModalRoadview = setModalRoadview;
+  /*                  window.modalCloseRoadview = modalCloseRoadview;*/
+                });
+</script>
+              <!-- Add more images as needed -->
+           
+                
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</th:block>

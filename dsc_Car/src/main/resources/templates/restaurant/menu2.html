@@ -1,0 +1,78 @@
+<html layout:decorate="~{layout}">
+
+
+
+<th:block layout:fragment="content" class="container">
+
+
+            <ul class="navbar-nav me-auto mt-3 mt-lg-0">
+            </ul>
+          
+        </nav>
+        
+ 
+      <div class="container-medium">
+        <div class="row gx-2	 gy-0 mb-0 align-items-center">
+        <section class="py-0">
+                <div class="py-6">
+                    <div class="d-flex">
+                        <select class="form-select w-sm-auto me-4" id="hotelSort" name="Hotel sort">
+                            <option>Sort by</option>
+                            <option>Best reviewed and lowest price</option>
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                        </select>
+                                  <div class="col-auto"><a class="btn btn-primary px-3"  href="/restaurant/addrestaurant"><span class="fa-solid fa-plus me-2"></span>장소 추가</a></div>
+                        
+                        <button class="btn btn-phoenix-secondary text-nowrap px-3 px-md-4 ms-auto me-2">
+                            <span class="fa-solid fa-map me-md-2"></span><span class="d-none d-md-inline-block">Show in map</span>
+                        </button>
+                        <button class="btn btn-phoenix-secondary text-nowrap px-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#hotelFilterOffcanvas" aria-controls="hotelFilterOffcanvas">
+                            <span class="fa-solid fa-filter me-md-2"></span><span class="d-none d-md-inline-block">Filters</span>
+                        </button>
+                    </div>
+                </div>
+                </section>
+        </div>
+        
+        <div class="row g-3 mb-2">
+          <div class="col-12 col-sm-6 col-md-4 col-xxl-3"th:each="restaurant : ${restaurants}">
+            <div class="btn-reveal-trigger position-relative rounded-2 overflow-hidden p-4" style="height: 236px;">
+<!-- 이미지가 존재할 경우 -->
+<div th:if="${firstPictures[restaurant.id] != null}"class="bg-holder"style="border: 2px solid #b8b8b8;" >
+								<img class="img-fluid d-block mx-auto"th:src="@{|${downpath}/${firstPictures[restaurant.id].image1}|}" alt="" /></div>   
+<!-- 이미지가 존재하지 않을 경우 -->
+	<div th:if="${firstPictures[restaurant.id] == null}"class="bg-holder"style="background-color: #c1c7db;">
+								<img class="img-fluid d-block mx-auto" src="/" alt="" /></div>			
+									
+								          <div class="position-relative h-100 d-flex flex-column justify-content-between">
+                <div class="d-flex justify-content-between align-items-center"><span class="badge badge-phoenix fs-10 badge-phoenix-primary" data-bs-theme="light">Ongoing</span>
+                  
+                </div>
+                <h3 class="text-black fw-bold line-clamp-2" th:text="${restaurant.locationname}">Project Doughnut Dungeon</h3>
+              </div><a class="stretched-link" th:href="@{|/restaurant/detail/${restaurant.id}|}"></a>
+            </div>
+          </div>
+        </div>
+        </div>
+     
+      
+      <script>
+        var navbarTopStyle = window.config.config.phoenixNavbarTopStyle;
+        var navbarTop = document.querySelector('.navbar-top');
+        if (navbarTopStyle === 'darker') {
+          navbarTop.setAttribute('data-navbar-appearance', 'darker');
+        }
+
+        var navbarVerticalStyle = window.config.config.phoenixNavbarVerticalStyle;
+        var navbarVertical = document.querySelector('.navbar-vertical');
+        if (navbarVertical && navbarVerticalStyle === 'darker') {
+          navbarVertical.setAttribute('data-navbar-appearance', 'darker');
+        }
+      </script>
+      
+      <br>
+      <br>
+      <br>
+   
+  </th:block>
