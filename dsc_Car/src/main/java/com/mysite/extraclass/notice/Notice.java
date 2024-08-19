@@ -22,17 +22,31 @@ public class Notice {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Integer id; 
 
+	
     @Column(length = 200) 
     private String title; 
 
+    
     @Column(columnDefinition = "TEXT") 
     private String content; 
+    
+    
+    @Column(columnDefinition = "TEXT") 
+    private String content1;
+    
+    
+    @Column(columnDefinition = "TEXT") 
+    private String content2;
 
+    
     private LocalDateTime date; 
+    
     
     private String image1;
     
+    
     private String image2;
+    
     
     private String image3;
     

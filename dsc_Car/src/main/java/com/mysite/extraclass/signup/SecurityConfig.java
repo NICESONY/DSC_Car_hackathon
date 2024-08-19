@@ -25,6 +25,8 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/notice/detail/**")).hasRole("ADMIN")
+                .requestMatchers(new AntPathRequestMatcher("/review/detail/**")).hasRole("ADMIN")
                 .anyRequest().permitAll())
             .formLogin((formLogin) -> formLogin
                 .loginPage("/signup/signin")

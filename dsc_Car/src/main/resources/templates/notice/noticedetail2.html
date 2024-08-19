@@ -16,16 +16,21 @@
         
 
 
-<div class="container-medium">
+	<div class="container-medium">
 	<a href="/notice" class = "btn btn-secondary my-3">구급차 증상 기록</a>
 	<a th:href="@{|/update2/${notice.id}|}" class = "btn btn-success my-3">수정</a>
 	<a th:href="@{|delete/${notice.id}|}" class = "btn btn-danger my-3">삭제</a>
     <!-- 질문 -->
+    
+    
+    
     <h2 class="border-bottom py-2" th:text="${notice.title}"></h2>
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;" th:text="${notice.content}"></div>
+        
+            <div class="card-text" style = "white-space: pre-line;" th:text = "${notice.content}"></div>
             <div class="d-flex justify-content-end">
+            
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div th:text="${#temporals.format(notice.date, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
